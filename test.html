@@ -161,6 +161,7 @@
     <div class="stat-item">Technika (C)<span id="stat-c" class="stat-val">0 / 0</span></div>
     <div class="stat-item">Celkem<span id="stat-total" class="stat-val">0%</span></div>
 </div>
+<div id="test-status" style="font-weight: bold; margin-top: 10px;"></div>
 
 <script src="questions.js"></script>
 <script>
@@ -215,7 +216,7 @@
     }
 
     function handleAnswer(qIndex, selected, correct, category, clickedBtn) {
-        clickedBtn.blur(); // Odstraní fokus a "zaseknutý" hover na mobilu
+        clickedBtn.blur();
 
         const currentBlock = document.getElementById(`block-${qIndex}`);
         const buttons = currentBlock.querySelectorAll('button');
@@ -251,44 +252,47 @@
     }
 
     function updateDisplayStats() {
-        let allSectionsPassed = true;
+        let allSectionsOk = true;
+        let anyAnswered = false;
 
         ['a', 'b', 'c'].forEach(cat => {
             const correct = stats[cat].correct;
             const total = stats[cat].total;
             const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
 
-            // Aktualizace textu: např. "28 / 35 (80%)"
+            if (total > 0) anyAnswered = true;
+
             const statElement = document.getElementById(`stat-${cat}`);
             statElement.innerText = `${correct} / ${total} (${percent}%)`;
 
-            // Logika pro barvu nebo stav sekce (90% hranice)
-            if (percent < 90) {
-                statElement.style.color = '#ff4444'; // Červená, pokud je pod 90 %
-                allSectionsPassed = false;
-            } else {
-                statElement.style.color = '#00C851'; // Zelená, pokud je 90 % a víc
+            // Kontrola 90% hranice pro každou sekci
+            if (total > 0 && percent < 90) {
+                statElement.style.color = '#ff4444'; // Červená - neprošel
+                allSectionsOk = false;
+            } else if (total > 0) {
+                statElement.style.color = '#00ff00'; // Zelená - zatím OK
             }
         });
 
-        // Celkové statistiky
+        // Celkové procento
         const totalAnswered = stats.a.total + stats.b.total + stats.c.total;
         const totalCorrect = stats.a.correct + stats.b.correct + stats.c.correct;
         const totalPercent = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
 
-        const totalElement = document.getElementById('stat-total');
-        totalElement.innerText = `${totalPercent}%`;
+        document.getElementById('stat-total').innerText = `${totalPercent}%`;
 
-        // Zobrazení finálního verdiktu
+        // Finální verdikt do #test-status
         const statusElement = document.getElementById('test-status');
-        if (statusElement) {
-            if (allSectionsPassed && totalAnswered >= 149) {
-                statusElement.innerText = "PROSPĚL JSI (Gratulace!)";
-                statusElement.style.color = "#00C851";
-            } else if (totalAnswered > 0) {
-                statusElement.innerText = allSectionsPassed ? "Zatím procházíš..." : "V některé sekci máš pod 90 %";
-                statusElement.style.color = allSectionsPassed ? "#ffbb33" : "#ff4444";
-            }
+
+        if (!anyAnswered) {
+            statusElement.innerText = "Začněte test";
+            statusElement.style.color = "white";
+        } else if (allSectionsOk) {
+            statusElement.innerText = "STAV: PROSPĚL (Všechny sekce nad 90 %)";
+            statusElement.style.color = "#00ff00";
+        } else {
+            statusElement.innerText = "STAV: NEPROSPĚL (Sekce pod 90 %)";
+            statusElement.style.color = "#ff4444";
         }
     }
 
