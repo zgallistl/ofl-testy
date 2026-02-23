@@ -17,7 +17,7 @@
             background-color: var(--bg);
             margin: 0;
             padding: 20px;
-            padding-bottom: 100px; /* prostor pro stat lištu */
+            padding-bottom: 120px; /* prostor pro stat lištu */
         }
 
         .container {
@@ -26,6 +26,30 @@
         }
 
         h1 { text-align: center; color: #333; }
+
+        /* Navigace */
+        .nav-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-link {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
 
         /* --- STYLY PRO BLOKY OTÁZEK --- */
         .question-block {
@@ -41,7 +65,6 @@
         .question-header {
             padding: 15px 20px;
             background: #fff;
-            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -49,51 +72,50 @@
             color: #666;
         }
 
-        /* Tělo otázky - výchozí stav skrytý */
         .question-body {
             display: none;
             padding: 0 20px 20px 20px;
             border-top: 1px solid #eee;
         }
 
-        /* Aktivní (aktuální) otázka */
         .question-block.active {
             border-left-color: var(--primary);
             box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
         }
-        .question-block.active .question-body {
-            display: block;
-        }
-        .question-block.active .question-header {
-            color: var(--primary);
-        }
+        .question-block.active .question-body { display: block; }
+        .question-block.active .question-header { color: var(--primary); }
 
-        /* Zodpovězená otázka */
-        .question-block.answered {
-            border-left-color: var(--success);
-        }
-        .question-block.answered .question-body {
-            display: block; /* Necháme svítit, jak jsi chtěl */
-        }
+        .question-block.answered { border-left-color: var(--success); }
+        .question-block.answered .question-body { display: block; }
 
         /* Tlačítka odpovědí */
         button {
             display: block;
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin: 8px 0;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 8px;
             background: #fff;
             cursor: pointer;
             text-align: left;
             font-size: 16px;
-            transition: background 0.2s;
+            transition: background 0.2s, border-color 0.2s;
+            -webkit-tap-highlight-color: transparent; /* Odstraní modrý záblesk na mobilu */
         }
 
-        button:hover:not(:disabled) {
-            background-color: #f8f9fa;
-            border-color: var(--primary);
+        /* OPRAVA HOVERU - Pouze pro myš */
+        @media (pointer: fine) {
+            button:hover:not(:disabled), .btn-link:hover {
+                background-color: #f0f7ff;
+                border-color: var(--primary);
+                color: var(--primary);
+            }
+        }
+
+        /* AKTIVNÍ STAV - Pro dotyk i myš */
+        button:active:not(:disabled) {
+            background-color: #e3f2fd;
         }
 
         button:disabled {
@@ -114,49 +136,23 @@
             justify-content: space-around;
             font-size: 14px;
             z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
         }
 
         .stat-item { text-align: center; }
         .stat-val { font-weight: bold; font-size: 18px; display: block; }
-        /* Navigace a přepínač */
-        .nav-header {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .btn-link {
-            display: inline-block;
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background-color: #fff;
-            color: #333;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .btn-link:hover {
-            background-color: #f0f7ff;
-            border-color: var(--primary);
-            color: var(--primary);
-        }
     </style>
 </head>
 <body>
 
 <div class="nav-header">
-    <a href="index.html" class="btn-link">← Zpět</a>
-
+    <a href="index.html" class="btn-link">← Menu</a>
+    <a href="test.html" class="btn-link">Nový test ↻</a>
 </div>
+
 <div class="container">
     <h1>OFL Letecký Radiotelefonista</h1>
-    <p>
-        <a href="test.html" class="btn-link">Nový test</a>
-    </p>
-    <div id="quiz-container">
-    </div>
+    <div id="quiz-container"></div>
 </div>
 
 <div class="stats-bar">
@@ -174,7 +170,6 @@
         c: { correct: 0, total: 0 }
     };
 
-    // Funkce pro náhodné promíchání pole (Fisher-Yates Shuffle)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -184,20 +179,14 @@
 
     function renderQuiz() {
         const container = document.getElementById('quiz-container');
-
-        // 1. Promícháme celou databázi (všech 120+)
         shuffleArray(quizData);
-
-        // 2. Vybereme pouze prvních 50 náhodných otázek
         const selectedQuestions = quizData.slice(0, 50);
 
-        // 3. Vykreslujeme už jen ten výběr (použijeme selectedQuestions místo quizData)
         selectedQuestions.forEach((q, index) => {
             const block = document.createElement('div');
             block.className = `question-block ${index === 0 ? 'active' : ''}`;
             block.id = `block-${index}`;
 
-            // ... zbytek kódu uvnitř forEach zůstává stejný ...
             const header = document.createElement('div');
             header.className = 'question-header';
             header.innerHTML = `<span>Otázka č. ${index + 1} <small>(${q.cat.toUpperCase()})</small></span>`;
@@ -209,7 +198,8 @@
             questionText.innerHTML = `<strong>${q.q}</strong>`;
             body.appendChild(questionText);
 
-            const options = [...q.others, q.a].sort(() => Math.random() - 0.5);
+            const options = [...q.others, q.a];
+            shuffleArray(options);
 
             options.forEach(opt => {
                 const btn = document.createElement('button');
@@ -225,9 +215,10 @@
     }
 
     function handleAnswer(qIndex, selected, correct, category, clickedBtn) {
+        clickedBtn.blur(); // Odstraní fokus a "zaseknutý" hover na mobilu
+
         const currentBlock = document.getElementById(`block-${qIndex}`);
         const buttons = currentBlock.querySelectorAll('button');
-
         const isCorrect = selected === correct;
 
         buttons.forEach(btn => {
@@ -260,14 +251,45 @@
     }
 
     function updateDisplayStats() {
+        let allSectionsPassed = true;
+
         ['a', 'b', 'c'].forEach(cat => {
-            document.getElementById(`stat-${cat}`).innerText = `${stats[cat].correct} / ${stats[cat].total}`;
+            const correct = stats[cat].correct;
+            const total = stats[cat].total;
+            const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+            // Aktualizace textu: např. "28 / 35 (80%)"
+            const statElement = document.getElementById(`stat-${cat}`);
+            statElement.innerText = `${correct} / ${total} (${percent}%)`;
+
+            // Logika pro barvu nebo stav sekce (90% hranice)
+            if (percent < 90) {
+                statElement.style.color = '#ff4444'; // Červená, pokud je pod 90 %
+                allSectionsPassed = false;
+            } else {
+                statElement.style.color = '#00C851'; // Zelená, pokud je 90 % a víc
+            }
         });
 
+        // Celkové statistiky
         const totalAnswered = stats.a.total + stats.b.total + stats.c.total;
         const totalCorrect = stats.a.correct + stats.b.correct + stats.c.correct;
-        const percent = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
-        document.getElementById('stat-total').innerText = `${percent}%`;
+        const totalPercent = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+
+        const totalElement = document.getElementById('stat-total');
+        totalElement.innerText = `${totalPercent}%`;
+
+        // Zobrazení finálního verdiktu
+        const statusElement = document.getElementById('test-status');
+        if (statusElement) {
+            if (allSectionsPassed && totalAnswered >= 149) {
+                statusElement.innerText = "PROSPĚL JSI (Gratulace!)";
+                statusElement.style.color = "#00C851";
+            } else if (totalAnswered > 0) {
+                statusElement.innerText = allSectionsPassed ? "Zatím procházíš..." : "V některé sekci máš pod 90 %";
+                statusElement.style.color = allSectionsPassed ? "#ffbb33" : "#ff4444";
+            }
+        }
     }
 
     window.onload = renderQuiz;
