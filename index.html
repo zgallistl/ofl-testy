@@ -143,28 +143,41 @@
         c: { correct: 0, total: 0 }
     };
 
+    // Funkce pro náhodné promíchání pole (Fisher-Yates Shuffle)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
     function renderQuiz() {
         const container = document.getElementById('quiz-container');
 
-        quizData.forEach((q, index) => {
+        // 1. Promícháme celou databázi (všech 120+)
+        shuffleArray(quizData);
+
+        // 2. Vybereme pouze prvních 50 náhodných otázek
+        const selectedQuestions = quizData.slice(0, 50);
+
+        // 3. Vykreslujeme už jen ten výběr (použijeme selectedQuestions místo quizData)
+        selectedQuestions.forEach((q, index) => {
             const block = document.createElement('div');
             block.className = `question-block ${index === 0 ? 'active' : ''}`;
             block.id = `block-${index}`;
 
-            // Hlavička
+            // ... zbytek kódu uvnitř forEach zůstává stejný ...
             const header = document.createElement('div');
             header.className = 'question-header';
             header.innerHTML = `<span>Otázka č. ${index + 1} <small>(${q.cat.toUpperCase()})</small></span>`;
 
-            // Tělo
             const body = document.createElement('div');
             body.className = 'question-body';
 
             const questionText = document.createElement('p');
-            questionText.innerText = q.q;
+            questionText.innerHTML = `<strong>${q.q}</strong>`;
             body.appendChild(questionText);
 
-            // Promíchání odpovědí (4 chybné + 1 správná)
             const options = [...q.others, q.a].sort(() => Math.random() - 0.5);
 
             options.forEach(opt => {
@@ -184,37 +197,31 @@
         const currentBlock = document.getElementById(`block-${qIndex}`);
         const buttons = currentBlock.querySelectorAll('button');
 
-        // Vyhodnocení
         const isCorrect = selected === correct;
 
-        // Barvy
         buttons.forEach(btn => {
-            btn.disabled = true; // Zamknout všechna tlačítka v otázce
+            btn.disabled = true;
             if (btn.innerText === correct) {
-                btn.style.backgroundColor = '#c8e6c9'; // Světle zelená pro správnou
+                btn.style.backgroundColor = '#c8e6c9';
                 btn.style.borderColor = 'var(--success)';
             }
         });
 
         if (!isCorrect) {
-            clickedBtn.style.backgroundColor = '#ffcdd2'; // Světle červená pro tvou chybu
+            clickedBtn.style.backgroundColor = '#ffcdd2';
             clickedBtn.style.borderColor = 'var(--error)';
         }
 
-        // Statistiky
         stats[category].total++;
         if (isCorrect) stats[category].correct++;
         updateDisplayStats();
 
-        // Logika sbalení/rozbalení
         currentBlock.classList.remove('active');
         currentBlock.classList.add('answered');
 
-        // Rozbalení další
         const nextBlock = document.getElementById(`block-${qIndex + 1}`);
         if (nextBlock) {
             nextBlock.classList.add('active');
-            // Jemné odscrollování k další otázce
             setTimeout(() => {
                 nextBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 300);
@@ -232,7 +239,6 @@
         document.getElementById('stat-total').innerText = `${percent}%`;
     }
 
-    // Spuštění po načtení
     window.onload = renderQuiz;
 </script>
 
