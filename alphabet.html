@@ -226,34 +226,49 @@
     let totalCount = 0;
     let currentItem = null;
 
+    // TATO FUNKCE TI CHYBĚLA:
+    function setMode(mode) {
+        currentMode = mode;
+
+        // Aktualizace vzhledu tlačítek (pokud mají ID btn-int a btn-cze)
+        const btnInt = document.getElementById('btn-int');
+        const btnCze = document.getElementById('btn-cze');
+
+        if (btnInt) btnInt.classList.toggle('active', mode === 'int');
+        if (btnCze) btnCze.classList.toggle('active', mode === 'cze');
+
+        // Reset statistik při přepnutí módu (volitelné)
+        correctCount = 0;
+        totalCount = 0;
+        updateStats();
+
+        // Okamžité vygenerování nové otázky v novém módu
+        nextQuestion();
+    }
+
     function nextQuestion() {
-        document.getElementById('pronunciation').innerText = '';
+        const pronEl = document.getElementById('pronunciation');
+        if (pronEl) pronEl.innerText = '';
+
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
 
         const activeData = currentMode === 'int' ? intAlphabet : czechAlphabet;
 
-        // Náhodný výběr písmene
         currentItem = activeData[Math.floor(Math.random() * activeData.length)];
         document.getElementById('letter').innerText = currentItem.l;
 
         let choices = [currentItem.w];
-
-        // Získání falešných slov pro dané písmeno
-        // (Používáme velké W i pro "Dvojité V", aby to fungovalo)
         const letterKey = currentItem.l === 'W' && currentMode === 'cze' ? 'W' : currentItem.l;
         let possibleFakes = [...(fakePool[letterKey] || [])];
 
-        // Odstraníme správné slovo z možných chyb
         possibleFakes = possibleFakes.filter(f => f !== currentItem.w);
 
-        // Naplníme choices na 4-5 možností (pokud je dost slov v poolu)
         while(choices.length < 4 && possibleFakes.length > 0) {
             let randomIndex = Math.floor(Math.random() * possibleFakes.length);
             choices.push(possibleFakes.splice(randomIndex, 1)[0]);
         }
 
-        // Pokud by bylo v poolu málo slov na stejné písmeno, doplníme zbytek náhodně (jako pojistku)
         while(choices.length < 4) {
             let randomLetter = Object.keys(fakePool)[Math.floor(Math.random() * 26)];
             let randomWord = fakePool[randomLetter][0];
@@ -279,8 +294,10 @@
         if (selected === currentItem.w) {
             correctCount++;
             btn.classList.add('correct');
+            // Výslovnost ukazujeme jen u mezinárodní (u české není potřeba)
             if(currentMode === 'int') {
-                document.getElementById('pronunciation').innerHTML = `Výslovnost: <strong>${currentItem.p}</strong>`;
+                const pronEl = document.getElementById('pronunciation');
+                if (pronEl) pronEl.innerHTML = `Výslovnost: <strong>${currentItem.p}</strong>`;
             }
         } else {
             btn.classList.add('wrong');
@@ -299,6 +316,7 @@
         document.getElementById('counts').innerText = `Správně: ${correctCount} | Celkem: ${totalCount}`;
     }
 
+    // Spuštění první otázky
     nextQuestion();
 </script>
 
