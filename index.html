@@ -3,244 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OFL Testy - ČTÚ 2026</title>
+    <title>OFL Příprava 2026</title>
     <style>
         :root {
             --primary: #2196F3;
-            --success: #4CAF50;
-            --error: #f44336;
+            --secondary: #607D8B;
             --bg: #f0f2f5;
+            --white: #ffffff;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             margin: 0;
-            padding: 20px;
-            padding-bottom: 100px; /* prostor pro stat lištu */
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        h1 { text-align: center; color: #333; }
-
-        /* --- STYLY PRO BLOKY OTÁZEK --- */
-        .question-block {
-            background: white;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border-left: 5px solid #ccc;
-        }
-
-        .question-header {
-            padding: 15px 20px;
-            background: #fff;
-            cursor: pointer;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            font-weight: bold;
-            color: #666;
+            height: 100vh;
         }
 
-        /* Tělo otázky - výchozí stav skrytý */
-        .question-body {
-            display: none;
-            padding: 0 20px 20px 20px;
-            border-top: 1px solid #eee;
+        .hub-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
         }
 
-        /* Aktivní (aktuální) otázka */
-        .question-block.active {
-            border-left-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-        }
-        .question-block.active .question-body {
-            display: block;
-        }
-        .question-block.active .question-header {
-            color: var(--primary);
-        }
-
-        /* Zodpovězená otázka */
-        .question-block.answered {
-            border-left-color: var(--success);
-        }
-        .question-block.answered .question-body {
-            display: block; /* Necháme svítit, jak jsi chtěl */
-        }
-
-        /* Tlačítka odpovědí */
-        button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #fff;
-            cursor: pointer;
-            text-align: left;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-
-        button:hover:not(:disabled) {
-            background-color: #f8f9fa;
-            border-color: var(--primary);
-        }
-
-        button:disabled {
-            cursor: default;
+        h1 {
             color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
         }
 
-        /* --- STATISTICKÁ LIŠTA --- */
-        .stats-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #333;
-            color: white;
-            padding: 15px;
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .menu-grid {
             display: flex;
-            justify-content: space-around;
-            font-size: 14px;
-            z-index: 1000;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .stat-item { text-align: center; }
-        .stat-val { font-weight: bold; font-size: 18px; display: block; }
+        .hub-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-decoration: none;
+            color: var(--white);
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+        }
+
+        .hub-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            opacity: 0.9;
+        }
+
+        .btn-test {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        .btn-alpha {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+        }
+
+        .icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #aaa;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>OFL Letecký Radiotelefonista</h1>
-    <div id="quiz-container">
+<div class="hub-container">
+    <h1>OFL Příprava</h1>
+    <p>Průkaz radiotelefonisty letecké pohyblivé služby</p>
+
+    <div class="menu-grid">
+        <a href="test.html" class="hub-btn btn-test">
+            <span class="icon">📝</span> Teoretické testy (50 ot.)
+        </a>
+
+        <a href="alphabet.html" class="hub-btn btn-alpha">
+            <span class="icon">📡</span> Trenažér abecedy (CZ/INT)
+        </a>
+    </div>
+
+    <div class="footer">
+        © 2026 PŘIPRAVEN NA ČTÚ
     </div>
 </div>
-
-<div class="stats-bar">
-    <div class="stat-item">Předpisy (A)<span id="stat-a" class="stat-val">0 / 0</span></div>
-    <div class="stat-item">Provoz (B)<span id="stat-b" class="stat-val">0 / 0</span></div>
-    <div class="stat-item">Technika (C)<span id="stat-c" class="stat-val">0 / 0</span></div>
-    <div class="stat-item">Celkem<span id="stat-total" class="stat-val">0%</span></div>
-</div>
-
-<script src="questions.js"></script>
-<script>
-    const stats = {
-        a: { correct: 0, total: 0 },
-        b: { correct: 0, total: 0 },
-        c: { correct: 0, total: 0 }
-    };
-
-    // Funkce pro náhodné promíchání pole (Fisher-Yates Shuffle)
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-    }
-
-    function renderQuiz() {
-        const container = document.getElementById('quiz-container');
-
-        // 1. Promícháme celou databázi (všech 120+)
-        shuffleArray(quizData);
-
-        // 2. Vybereme pouze prvních 50 náhodných otázek
-        const selectedQuestions = quizData.slice(0, 50);
-
-        // 3. Vykreslujeme už jen ten výběr (použijeme selectedQuestions místo quizData)
-        selectedQuestions.forEach((q, index) => {
-            const block = document.createElement('div');
-            block.className = `question-block ${index === 0 ? 'active' : ''}`;
-            block.id = `block-${index}`;
-
-            // ... zbytek kódu uvnitř forEach zůstává stejný ...
-            const header = document.createElement('div');
-            header.className = 'question-header';
-            header.innerHTML = `<span>Otázka č. ${index + 1} <small>(${q.cat.toUpperCase()})</small></span>`;
-
-            const body = document.createElement('div');
-            body.className = 'question-body';
-
-            const questionText = document.createElement('p');
-            questionText.innerHTML = `<strong>${q.q}</strong>`;
-            body.appendChild(questionText);
-
-            const options = [...q.others, q.a].sort(() => Math.random() - 0.5);
-
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.innerText = opt;
-                btn.onclick = () => handleAnswer(index, opt, q.a, q.cat, btn);
-                body.appendChild(btn);
-            });
-
-            block.appendChild(header);
-            block.appendChild(body);
-            container.appendChild(block);
-        });
-    }
-
-    function handleAnswer(qIndex, selected, correct, category, clickedBtn) {
-        const currentBlock = document.getElementById(`block-${qIndex}`);
-        const buttons = currentBlock.querySelectorAll('button');
-
-        const isCorrect = selected === correct;
-
-        buttons.forEach(btn => {
-            btn.disabled = true;
-            if (btn.innerText === correct) {
-                btn.style.backgroundColor = '#c8e6c9';
-                btn.style.borderColor = 'var(--success)';
-            }
-        });
-
-        if (!isCorrect) {
-            clickedBtn.style.backgroundColor = '#ffcdd2';
-            clickedBtn.style.borderColor = 'var(--error)';
-        }
-
-        stats[category].total++;
-        if (isCorrect) stats[category].correct++;
-        updateDisplayStats();
-
-        currentBlock.classList.remove('active');
-        currentBlock.classList.add('answered');
-
-        const nextBlock = document.getElementById(`block-${qIndex + 1}`);
-        if (nextBlock) {
-            nextBlock.classList.add('active');
-            setTimeout(() => {
-                nextBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 300);
-        }
-    }
-
-    function updateDisplayStats() {
-        ['a', 'b', 'c'].forEach(cat => {
-            document.getElementById(`stat-${cat}`).innerText = `${stats[cat].correct} / ${stats[cat].total}`;
-        });
-
-        const totalAnswered = stats.a.total + stats.b.total + stats.c.total;
-        const totalCorrect = stats.a.correct + stats.b.correct + stats.c.correct;
-        const percent = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
-        document.getElementById('stat-total').innerText = `${percent}%`;
-    }
-
-    window.onload = renderQuiz;
-</script>
 
 </body>
 </html>

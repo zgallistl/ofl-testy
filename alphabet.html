@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFL Trenér - Abeceda</title>
+    <style>
+        :root {
+            --primary: #2196F3;
+            --success: #4CAF50;
+            --error: #f44336;
+            --bg: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        /* Navigace a přepínač */
+        .nav-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-link:hover {
+            background-color: #f0f7ff;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .mode-selector {
+            display: flex;
+            background: #eee;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            background: transparent;
+            color: #666;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .letter-display {
+            font-size: 100px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button.option-btn {
+            padding: 15px;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button.option-btn:hover:not(:disabled) {
+            background-color: #f0f7ff;
+            border-color: var(--primary);
+        }
+
+        button.correct {
+            background-color: var(--success) !important;
+            color: white;
+            border-color: var(--success);
+        }
+
+        button.wrong {
+            background-color: var(--error) !important;
+            color: white;
+            border-color: var(--error);
+        }
+
+        .stats {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+
+        #score { font-size: 24px; font-weight: bold; color: #333; }
+
+        .pronunciation {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #444;
+            height: 25px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="nav-header">
+    <a href="index.html" class="btn-link">← Zpět</a>
+</div>
+
+<div class="container">
+    <h1>Hláskovací abeceda</h1>
+    <div class="mode-selector">
+        <button id="btn-int" class="mode-btn active" onclick="setMode('int')">Mezinárodní (Alpha)</button>
+        <button id="btn-cze" class="mode-btn" onclick="setMode('cze')">Česká (Adam)</button>
+    </div>
+
+    <div id="letter" class="letter-display">-</div>
+
+    <div id="options" class="options-grid"></div>
+
+    <div id="pronunciation" class="pronunciation"></div>
+
+    <div class="stats">
+        Úspěšnost: <span id="score">0%</span><br>
+        <small id="counts">Správně: 0 | Celkem: 0</small>
+    </div>
+</div>
+
+<script>
+    const czechAlphabet = [
+        { l: 'A', w: 'ADAM', p: 'ADAM' }, { l: 'B', w: 'BOŽENA', p: 'BOŽENA' }, { l: 'C', w: 'CYRIL', p: 'CYRIL' },
+        { l: 'D', w: 'DAVID', p: 'DAVID' }, { l: 'E', w: 'EMIL', p: 'EMIL' }, { l: 'F', w: 'FRANTIŠEK', p: 'FRANTIŠEK' },
+        { l: 'G', w: 'GUSTAV', p: 'GUSTAV' }, { l: 'H', w: 'HELENA', p: 'HELENA' }, { l: 'I', w: 'IVAN', p: 'IVAN' },
+        { l: 'J', w: 'JOSEF', p: 'JOSEF' }, { l: 'K', w: 'KAREL', p: 'KAREL' }, { l: 'L', w: 'LUDVÍK', p: 'LUDVÍK' },
+        { l: 'M', w: 'MARIE', p: 'MARIE' }, { l: 'N', w: 'NORBERT', p: 'NORBERT' }, { l: 'O', w: 'OTO', p: 'OTO' },
+        { l: 'P', w: 'PETR', p: 'PETR' }, { l: 'Q', w: 'QUIDO', p: 'QUIDO' }, { l: 'R', w: 'RUDOLF', p: 'RUDOLF' },
+        { l: 'S', w: 'SVATOPLUK', p: 'SVATOPLUK' }, { l: 'T', w: 'TOMÁŠ', p: 'TOMÁŠ' }, { l: 'U', w: 'URBAN', p: 'URBAN' },
+        { l: 'V', w: 'VÁCLAV', p: 'VÁCLAV' }, { l: 'W', w: 'DVOJITÉ V', p: 'DVOJITÉ V' }, { l: 'X', w: 'XAVER', p: 'XAVER' },
+        { l: 'Y', w: 'YPSILON', p: 'YPSILON' }, { l: 'Z', w: 'ZUZANA', p: 'ZUZANA' }
+    ];
+
+    const intAlphabet = [
+        { l: 'A', w: 'ALPHA', p: 'ALFA' }, { l: 'B', w: 'BRAVO', p: 'BRÁVO' }, { l: 'C', w: 'CHARLIE', p: 'ČÁRLÍ' },
+        { l: 'D', w: 'DELTA', p: 'DELTA' }, { l: 'E', w: 'ECHO', p: 'EKOU' }, { l: 'F', w: 'FOXTROT', p: 'FOXTROT' },
+        { l: 'G', w: 'GOLF', p: 'GOLF' }, { l: 'H', w: 'HOTEL', p: 'HOUTL' }, { l: 'I', w: 'INDIA', p: 'INDIA' },
+        { l: 'J', w: 'JULIETT', p: 'DŽULIET' }, { l: 'K', w: 'KILO', p: 'KCHILO' }, { l: 'L', w: 'LIMA', p: 'LIMA' },
+        { l: 'M', w: 'MIKE', p: 'MAJK' }, { l: 'N', w: 'NOVEMBER', p: 'NOUVEMBR' }, { l: 'O', w: 'OSKAR', p: 'ÓSKR' },
+        { l: 'P', w: 'PAPA', p: 'PAPA' }, { l: 'Q', w: 'QUEBEC', p: 'KEBEK' }, { l: 'R', w: 'ROMEO', p: 'ROMEOU' },
+        { l: 'S', w: 'SIERRA', p: 'SIERA' }, { l: 'T', w: 'TANGO', p: 'TANGOU' }, { l: 'U', w: 'UNIFORM', p: 'JUNIFORM' },
+        { l: 'V', w: 'VICTOR', p: 'VIKTR' }, { l: 'W', w: 'WHISKEY', p: 'WISKY' }, { l: 'X', w: 'X-RAY', p: 'IX-REJ' },
+        { l: 'Y', w: 'YANKEE', p: 'JENKÍ' }, { l: 'Z', w: 'ZULU', p: 'ZULU' }
+    ];
+
+    // Falešná slova specifická pro češtinu (jména a běžná slova)
+    const fakeCze = [
+        'ALENA', 'BOHOUŠ', 'CYRIL', 'DUŠAN', 'EVŽEN', 'FILIP', 'GABRIEL', 'HYNEK', 'IGOR', 'JARDA',
+        'KAMIL', 'LUKÁŠ', 'MAREK', 'NELA', 'OLGA', 'PAVEL', 'RADIM', 'ŠIMON', 'TADEÁŠ', 'URŠULA',
+        'VÍT', 'ZDENĚK', 'ANNA', 'BEDŘICH', 'ČESTMÍR', 'DANA', 'EMILIE', 'HANA', 'IVETA', 'JAKUB'
+    ];
+
+    // Falešná slova specifická pro angličtinu (mezinárodní)
+    const fakeInt = [
+        'ABLE', 'BAKER', 'COAST', 'DANGER', 'EASY', 'FLIGHT', 'GROUND', 'HENRY', 'INDIGO', 'JOKER',
+        'KING', 'LONDON', 'MOTHER', 'NORTH', 'OCEAN', 'PETER', 'QUEEN', 'ROGER', 'SUGAR', 'TOWER',
+        'UNCLE', 'VICTORY', 'WHISKEY', 'X-BOX', 'YELLOW', 'ZEBRA', 'BOSTON', 'CHICAGO', 'DENVER'
+    ];
+
+    let currentMode = 'int';
+    let correctCount = 0;
+    let totalCount = 0;
+    let currentItem = null;
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.getElementById('btn-int').classList.toggle('active', mode === 'int');
+        document.getElementById('btn-cze').classList.toggle('active', mode === 'cze');
+        correctCount = 0;
+        totalCount = 0;
+        updateStats();
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        document.getElementById('pronunciation').innerText = '';
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+
+        const activeData = currentMode === 'int' ? intAlphabet : czechAlphabet;
+        const activeFake = currentMode === 'int' ? fakeInt : fakeCze;
+
+        currentItem = activeData[Math.floor(Math.random() * activeData.length)];
+        document.getElementById('letter').innerText = currentItem.l;
+
+        let choices = [currentItem.w];
+
+        while(choices.length < 5) {
+            let fake = activeFake[Math.floor(Math.random() * activeFake.length)];
+            if(!choices.includes(fake) && fake !== currentItem.w) {
+                choices.push(fake);
+            }
+        }
+
+        choices.sort(() => Math.random() - 0.5);
+
+        choices.forEach(choice => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = choice;
+            btn.onclick = () => checkAnswer(choice, btn);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected, btn) {
+        totalCount++;
+        const allButtons = document.querySelectorAll('.option-btn');
+        allButtons.forEach(b => b.disabled = true);
+
+        if (selected === currentItem.w) {
+            correctCount++;
+            btn.classList.add('correct');
+            if(currentMode === 'int') {
+                document.getElementById('pronunciation').innerHTML = `Výslovnost: <strong>${currentItem.p}</strong>`;
+            }
+        } else {
+            btn.classList.add('wrong');
+            allButtons.forEach(b => {
+                if(b.innerText === currentItem.w) b.classList.add('correct');
+            });
+        }
+
+        updateStats();
+        setTimeout(nextQuestion, 1200);
+    }
+
+    function updateStats() {
+        const percent = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+        document.getElementById('score').innerText = `${percent}%`;
+        document.getElementById('counts').innerText = `Správně: ${correctCount} | Celkem: ${totalCount}`;
+    }
+
+    nextQuestion();
+</script>
+
+</body>
+</html>
