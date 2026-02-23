@@ -184,41 +184,47 @@
         { l: 'D', w: 'DELTA', p: 'DELTA' }, { l: 'E', w: 'ECHO', p: 'EKOU' }, { l: 'F', w: 'FOXTROT', p: 'FOXTROT' },
         { l: 'G', w: 'GOLF', p: 'GOLF' }, { l: 'H', w: 'HOTEL', p: 'HOUTL' }, { l: 'I', w: 'INDIA', p: 'INDIA' },
         { l: 'J', w: 'JULIETT', p: 'DŽULIET' }, { l: 'K', w: 'KILO', p: 'KCHILO' }, { l: 'L', w: 'LIMA', p: 'LIMA' },
-        { l: 'M', w: 'MIKE', p: 'MAJK' }, { l: 'N', w: 'NOVEMBER', p: 'NOUVEMBR' }, { l: 'O', w: 'OSKAR', p: 'ÓSKR' },
+        { l: 'M', w: 'MIKE', p: 'MAJK' }, { l: 'N', w: 'NOVEMBER', p: 'NOUVEMBR' }, { l: 'O', w: 'OSCAR', p: 'ÓSKR' },
         { l: 'P', w: 'PAPA', p: 'PAPA' }, { l: 'Q', w: 'QUEBEC', p: 'KEBEK' }, { l: 'R', w: 'ROMEO', p: 'ROMEOU' },
         { l: 'S', w: 'SIERRA', p: 'SIERA' }, { l: 'T', w: 'TANGO', p: 'TANGOU' }, { l: 'U', w: 'UNIFORM', p: 'JUNIFORM' },
         { l: 'V', w: 'VICTOR', p: 'VIKTR' }, { l: 'W', w: 'WHISKEY', p: 'WISKY' }, { l: 'X', w: 'X-RAY', p: 'IX-REJ' },
         { l: 'Y', w: 'YANKEE', p: 'JENKÍ' }, { l: 'Z', w: 'ZULU', p: 'ZULU' }
     ];
 
-    // Falešná slova specifická pro češtinu (jména a běžná slova)
-    const fakeCze = [
-        'ALENA', 'BOHOUŠ', 'CYRIL', 'DUŠAN', 'EVŽEN', 'FILIP', 'GABRIEL', 'HYNEK', 'IGOR', 'JARDA',
-        'KAMIL', 'LUKÁŠ', 'MAREK', 'NELA', 'OLGA', 'PAVEL', 'RADIM', 'ŠIMON', 'TADEÁŠ', 'URŠULA',
-        'VÍT', 'ZDENĚK', 'ANNA', 'BEDŘICH', 'ČESTMÍR', 'DANA', 'EMILIE', 'HANA', 'IVETA', 'JAKUB'
-    ];
-
-    // Falešná slova specifická pro angličtinu (mezinárodní)
-    const fakeInt = [
-        'ABLE', 'BAKER', 'COAST', 'DANGER', 'EASY', 'FLIGHT', 'GROUND', 'HENRY', 'INDIGO', 'JOKER',
-        'KING', 'LONDON', 'MOTHER', 'NORTH', 'OCEAN', 'PETER', 'QUEEN', 'ROGER', 'SUGAR', 'TOWER',
-        'UNCLE', 'VICTORY', 'WHISKEY', 'X-BOX', 'YELLOW', 'ZEBRA', 'BOSTON', 'CHICAGO', 'DENVER'
-    ];
+    // Rozšířený pool falešných slov pro variantní generování
+    const fakePool = {
+        'A': ['ALENA', 'ANNA', 'ALEX', 'ABLE', 'APPLE', 'AIR'],
+        'B': ['BEDŘICH', 'BARBORA', 'BAKER', 'BOSTON', 'BLUE', 'BEER'],
+        'C': ['CYRIL', 'CESTA', 'CENTER', 'COAST', 'CANADA', 'CHARLESTON'],
+        'D': ['DANA', 'DUŠAN', 'DAVID', 'DELTA', 'DANGER', 'DENVER', 'DOG'],
+        'E': ['EVŽEN', 'EMÍLIE', 'EASY', 'ELEMENT', 'EAST', 'EAGLE'],
+        'F': ['FILIP', 'FANDA', 'FLIGHT', 'FOX', 'FRANCE', 'FRIDAY'],
+        'G': ['GABRIEL', 'GERDA', 'GROUND', 'GEORGE', 'GREEN', 'GUITAR'],
+        'H': ['HANA', 'HYNEK', 'HENRY', 'HELLO', 'HOME', 'HUNGRY'],
+        'I': ['IGOR', 'IVETA', 'INDIGO', 'ITEM', 'ICE', 'ISLAND'],
+        'J': ['JAKUB', 'JARDA', 'JOKER', 'JULY', 'JACKET', 'JUMP'],
+        'K': ['KAMIL', 'KAREL', 'KING', 'KAPPA', 'KANSAS', 'KEY'],
+        'L': ['LUKÁŠ', 'LUDVÍK', 'LONDON', 'LUCKY', 'LEVEL', 'LIGHT'],
+        'M': ['MAREK', 'MARIE', 'MOTHER', 'METRO', 'MAGIC', 'MONDAY'],
+        'N': ['NELA', 'NORBERT', 'NORTH', 'NIGHT', 'NOBEL', 'NAVY'],
+        'O': ['OLGA', 'OTA', 'OCEAN', 'ORANGE', 'OPEN', 'OFFICE'],
+        'P': ['PAVEL', 'PETRA', 'PETER', 'PILOT', 'PAPER', 'POLICE'],
+        'Q': ['QUIDO', 'QUARTZ', 'QUEEN', 'QUICK', 'QUERY', 'QUALITY'],
+        'R': ['RADIM', 'RUDOLF', 'ROGER', 'RADIO', 'RIVER', 'RED'],
+        'S': ['ŠIMON', 'SVATOPLUK', 'SUGAR', 'SOUTH', 'SILVER', 'SKY'],
+        'T': ['TADEÁŠ', 'TOMÁŠ', 'TOWER', 'TIGER', 'TABLE', 'TARGET'],
+        'U': ['URŠULA', 'URBAN', 'UNCLE', 'UNIT', 'UNDER', 'UNIFORM'],
+        'V': ['VÍT', 'VÁCLAV', 'VICTORY', 'VIDEO', 'VALLEY', 'VOICE'],
+        'W': ['WOLF', 'WILLIAM', 'WATER', 'WINTER', 'WHITE', 'WORLD'],
+        'X': ['XAVER', 'XEROX', 'X-BOX', 'X-AXIS', 'XENON'],
+        'Y': ['YPSILON', 'YELLOW', 'YOGA', 'YARD', 'YOUTH'],
+        'Z': ['ZDENĚK', 'ZUZANA', 'ZEBRA', 'ZERO', 'ZONE', 'ZINC']
+    };
 
     let currentMode = 'int';
     let correctCount = 0;
     let totalCount = 0;
     let currentItem = null;
-
-    function setMode(mode) {
-        currentMode = mode;
-        document.getElementById('btn-int').classList.toggle('active', mode === 'int');
-        document.getElementById('btn-cze').classList.toggle('active', mode === 'cze');
-        correctCount = 0;
-        totalCount = 0;
-        updateStats();
-        nextQuestion();
-    }
 
     function nextQuestion() {
         document.getElementById('pronunciation').innerText = '';
@@ -226,18 +232,32 @@
         optionsDiv.innerHTML = '';
 
         const activeData = currentMode === 'int' ? intAlphabet : czechAlphabet;
-        const activeFake = currentMode === 'int' ? fakeInt : fakeCze;
 
+        // Náhodný výběr písmene
         currentItem = activeData[Math.floor(Math.random() * activeData.length)];
         document.getElementById('letter').innerText = currentItem.l;
 
         let choices = [currentItem.w];
 
-        while(choices.length < 5) {
-            let fake = activeFake[Math.floor(Math.random() * activeFake.length)];
-            if(!choices.includes(fake) && fake !== currentItem.w) {
-                choices.push(fake);
-            }
+        // Získání falešných slov pro dané písmeno
+        // (Používáme velké W i pro "Dvojité V", aby to fungovalo)
+        const letterKey = currentItem.l === 'W' && currentMode === 'cze' ? 'W' : currentItem.l;
+        let possibleFakes = [...(fakePool[letterKey] || [])];
+
+        // Odstraníme správné slovo z možných chyb
+        possibleFakes = possibleFakes.filter(f => f !== currentItem.w);
+
+        // Naplníme choices na 4-5 možností (pokud je dost slov v poolu)
+        while(choices.length < 4 && possibleFakes.length > 0) {
+            let randomIndex = Math.floor(Math.random() * possibleFakes.length);
+            choices.push(possibleFakes.splice(randomIndex, 1)[0]);
+        }
+
+        // Pokud by bylo v poolu málo slov na stejné písmeno, doplníme zbytek náhodně (jako pojistku)
+        while(choices.length < 4) {
+            let randomLetter = Object.keys(fakePool)[Math.floor(Math.random() * 26)];
+            let randomWord = fakePool[randomLetter][0];
+            if(!choices.includes(randomWord)) choices.push(randomWord);
         }
 
         choices.sort(() => Math.random() - 0.5);
