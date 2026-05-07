@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Kompatibilita Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 { text-align: center; color: #2c3e50; }
+        .video-container {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
+            aspect-ratio: 16 / 9;
+        }
+        .label {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .problematic { background: #fee2e2; color: #b91c1c; }
+        .fixed { background: #dcfce7; color: #15803d; }
+        .info { font-size: 0.85em; color: #666; margin-top: 10px; }
+        code { background: #eee; padding: 2px 4px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<h1>Test kompatibility videa (4K HEVC)</h1>
+<p>Tato stránka testuje binární shodu videí hostovaných na Google Drive. Na Apple zařízeních by horní video mělo vykazovat chybu (pouze zvuk), zatímco spodní by mělo hrát korektně.</p>
+
+<!-- VIDEO 1: PROBLÉMOVÉ -->
+<div class="video-container">
+    <span class="label problematic">Původní / Problémové video</span>
+    <video controls playsinline preload="metadata">
+        <source src="https://docs.google.com/uc?export=download&id=1IXVqn87u2s2DSO4YB_BqqfcM537wzu4i" type="video/mp4">
+        Váš prohlížeč nepodporuje tento formát videa.
+    </video>
+    <div class="info">
+        <strong>Stav:</strong> Pravděpodobně bez <code>hvc1</code> tagu a v <code>yuv444p</code>.
+    </div>
+</div>
+
+<!-- VIDEO 2: OPRAVENÉ -->
+<div class="video-container">
+    <span class="label fixed">Opravené video (HEVC + hvc1 + yuv420p)</span>
+    <video controls playsinline preload="metadata">
+        <!--<source src="https://docs.google.com/uc?export=download&id=15BWm070gbTUfiqCXigDHFWRXS5Ht-bD4" type="video/mp4; codecs='hvc1.1.6.L153.B0'">-->
+        <source src="https://docs.google.com/uc?export=download&id=15BWm070gbTUfiqCXigDHFWRXS5Ht-bD4" type="video/mp4">
+        Váš prohlížeč nepodporuje tento formát videa.
+    </video>
+    <div class="info">
+        <strong>Stav:</strong> Optimalizováno pro Apple Safari/iOS a webové prohlížeče.
+    </div>
+</div>
+
+<footer style="text-align: center; margin-top: 50px; font-size: 0.8em; color: #999;">
+    Poznámka: Pokud se video nenačte, Google Drive pravděpodobně blokuje přímý stream kvůli velikosti souboru.
+</footer>
+
+</body>
+</html>
